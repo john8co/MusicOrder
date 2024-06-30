@@ -62,7 +62,7 @@ namespace MusicOrder
             {
                 Console.WriteLine($"Une erreur s'est produite dans OrderMusicFiles : {ex.Message}");
             }
-            Console.WriteLine($"{counter.NewFolderCounter} nouvels artistes ajoutés et {counter.MoveSongCounter} chansons triées");
+            Console.WriteLine($"{counter.NewFolderCounter} nouvels artistes ajoutés, {counter.MoveSongCounter} chansons triées et {counter.DeleteExistingCounter} doublons supprimés");
         }
         private static void ManageMp3File(ref ExistingFoldersInfo existings, string criteria, string folderPath, string criteriaFileParh,ref Counter counter)
         {
@@ -79,14 +79,15 @@ namespace MusicOrder
             {
                 string destFilePath = Path.Combine(destinationFolder.Path, Path.GetFileName(criteriaFileParh));
 
-                if (File.Exists(criteriaFileParh))
+                if (!File.Exists(destFilePath))
                 {
                     File.Move(criteriaFileParh, destFilePath);
                     counter.MoveSongCounter++;
                 }
                 else
                 {
-                    Console.WriteLine($"Le file source '{criteriaFileParh}' n'existe pas.");
+                    File.Delete(criteriaFileParh);
+                    counter.DeleteExistingCounter++;
                 }
             }
             else
