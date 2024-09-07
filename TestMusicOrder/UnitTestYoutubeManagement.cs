@@ -1,4 +1,5 @@
 using MusicOrder;
+using MusicOrder.Models;
 
 namespace TestMusicOrder
 {
@@ -7,9 +8,10 @@ namespace TestMusicOrder
         [Fact]
         public async void TestDownloadMusic()
         {
-            string videoUrl = @"https://www.youtube.com/watch?v=X4nZ3jivx9A&ab_channel=ChloeMillion";
+            string videoUrl = @"https://www.youtube.com/watch?v=NiSDXYBYIe8&ab_channel=CYRIL";
+            var offer = new ExcelOrder(videoUrl, "Stumblin' In", "CYRIL");
             string folderPath = @"E:\Musique\MusicOrder";
-            Assert.True(await YoutubeManagement.DownloadMusic(videoUrl, folderPath));
+            Assert.True(await YoutubeManagement.DownloadMusic(offer, folderPath));
         }
     }
 }
