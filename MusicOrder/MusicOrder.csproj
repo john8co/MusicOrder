@@ -5,10 +5,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ApplicationIcon>MusicOrder.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="MusicOrder.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
+    <PackageReference Include="YoutubeExplode" Version="6.4.0" />
   </ItemGroup>
 
 </Project>

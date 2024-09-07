@@ -1,5 +1,4 @@
 ﻿using MusicOrder.Models;
-using System.Diagnostics.Metrics;
 
 namespace MusicOrder
 {
@@ -33,7 +32,7 @@ namespace MusicOrder
                 Artist = string.Join(", ", file.Tag.Performers).Trim(),
                 Album = file.Tag.Album,
                 Year = (int)file.Tag.Year,
-                Genre = string.Join(", ", file.Tag.Genres)
+                Genre = string.Join(", ", file.Tag.Genres)                
             };
         }        
 
