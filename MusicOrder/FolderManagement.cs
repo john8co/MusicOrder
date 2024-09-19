@@ -12,7 +12,6 @@ namespace MusicOrder
         }
         public static FolderInfo CreateFolder(string folderPath, string nom)
         {
-
             string nouveaufolderPath = Path.Combine(folderPath, nom);
             Directory.CreateDirectory(nouveaufolderPath);
             return new FolderInfo(nom, nouveaufolderPath);

@@ -2,23 +2,19 @@
 
 namespace MusicOrder
 {
-    public class Mp3Management
+    public class Mp3Management : BaseClass
     {
         private static List<Mp3FileInfo> GetAllMp3(string folderPath)
         {
-            List<Mp3FileInfo> result = new List<Mp3FileInfo>();
+            var result = new List<Mp3FileInfo>();
             try
             {
-                string[] filesMp3 = Directory.GetFiles(folderPath, "*.mp3");
-                foreach (string file in filesMp3)
-                {
-                    var infoMp3 = GetMp3FileInfo(file);
-                    result.Add(infoMp3);
-                }
+                var filesMp3 = Directory.GetFiles(folderPath, "*.mp3");
+                result.AddRange(filesMp3.Select(GetMp3FileInfo));
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Une erreur s'est produite : " + ex.Message);
+                _logger.Error($"Une erreur s'est produite lors de la récupération des fichiers MP3 : {ex.Message}");
             }
             return result;
         }
@@ -38,14 +34,14 @@ namespace MusicOrder
 
         public static void OrderMusicFiles(string folderPath)
         {
-            Counter counter = new Counter();
+            var counter = new Counter();
             try
             {
-                ExistingFoldersInfo existingArtists = new ExistingFoldersInfo(folderPath);
-                FolderInfo animeFolders = FolderManagement.GetFolderAnime(folderPath);
-                ExistingFoldersInfo existingAnimes = new ExistingFoldersInfo(animeFolders.Path);
+                var existingArtists = new ExistingFoldersInfo(folderPath);
+                var animeFolders = FolderManagement.GetFolderAnime(folderPath);
+                var existingAnimes = new ExistingFoldersInfo(animeFolders.Path);
 
-                foreach (Mp3FileInfo mp3File in GetAllMp3(folderPath))
+                foreach (var mp3File in GetAllMp3(folderPath))
                 {
                     if (mp3File.Genre != "Anime")
                     {
@@ -59,9 +55,9 @@ namespace MusicOrder
             }            
             catch (Exception ex)
             {
-                Console.WriteLine($"Une erreur s'est produite dans OrderMusicFiles : {ex.Message}");
+                _logger.Error($"Une erreur s'est produite dans OrderMusicFiles : {ex.Message}");
             }
-            Console.WriteLine($"{counter.NewFolderCounter} nouvels artistes ajoutés, {counter.MoveSongCounter} chansons triées et {counter.DeleteExistingCounter} doublons supprimés");
+            _logger.Information($"{counter.NewFolderCounter} nouvels artistes ajoutés, {counter.MoveSongCounter} chansons triées et {counter.DeleteExistingCounter} doublons supprimés");
         }
         private static void ManageMp3File(ref ExistingFoldersInfo existings, string criteria, string folderPath, string criteriaFileParh,ref Counter counter)
         {
@@ -76,8 +72,7 @@ namespace MusicOrder
             var destinationFolder = existings.ExistingFolders.FirstOrDefault(f => f.Name == criteria);
             if (destinationFolder != null)
             {
-                string destFilePath = Path.Combine(destinationFolder.Path, Path.GetFileName(criteriaFileParh));
-
+                var destFilePath = Path.Combine(destinationFolder.Path, Path.GetFileName(criteriaFileParh));
                 if (!File.Exists(destFilePath))
                 {
                     File.Move(criteriaFileParh, destFilePath);
@@ -91,7 +86,7 @@ namespace MusicOrder
             }
             else
             {
-                Console.WriteLine($"Le folderPath de destination pour '{criteria}' n'a pas été trouvé.");
+                _logger.Error($"Le folderPath de destination pour '{criteria}' n'a pas été trouvé.");
             }
         }
     }

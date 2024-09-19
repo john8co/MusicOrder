@@ -3,29 +3,19 @@ using MusicOrder.Models;
 
 namespace MusicOrder
 {
-    public class ExcelManagement : IDisposable
+    public class ExcelManagement : BaseClass, IDisposable
     {
         private XLWorkbook _wb;
-        private int _usedWorksheet = 1;
         private int _lastRow;
         private bool _disposed = false;
-
-        private string ReadCell(int row, int col, int sheetNum)
+        public string ReadCell(int row, int col, int sheetNum = 1)
         {
             return _wb.Worksheet(sheetNum).Cell(row, col).Value.ToString();
         }
-        public string ReadCell(int row, int col)
-        {
-            return ReadCell(row, col, _usedWorksheet);
-        }
-        private void WriteCell(int row, int col, string value, int sheetNum)
+        public void WriteCell(int row, int col, string value, int sheetNum = 1)
         {
             var cell = _wb.Worksheet(sheetNum).Cell(row, col);
             cell.Value = value;
-        }
-        public void WriteCell(int row, int col, string value)
-        {
-            WriteCell(row, col, value, _usedWorksheet);
         }
         public void Save()
         {
@@ -35,12 +25,52 @@ namespace MusicOrder
         {
             _wb.SaveAs(filename, false);
         }
-        public void StartReader(string filepath, int sheetNum)
+        public void StartReader(string filepath, int sheetNum = 1, int retries = 5, int delayMilliseconds = 1000)
         {
-            _wb = new XLWorkbook(filepath);
-            var ws = _wb.Worksheet(sheetNum);
-            _usedWorksheet = sheetNum;
-            _lastRow = ws.LastRowUsed().RowNumber();
+            int attempt = 0;
+            bool fileLocked = false;
+
+            try
+            {
+                _logger.Information("Démarrage de la lecture du fichier Excel.");
+                while (attempt < retries)
+                {
+                    if (!IsFileLocked(filepath))
+                    {
+                        break;
+                    }
+                    _logger.Information($"Le fichier est verrouillé. Réessai {attempt + 1}/{retries} dans {delayMilliseconds / 1000} secondes...");
+                    Thread.Sleep(delayMilliseconds);
+                    attempt++;
+                }
+                _wb = new XLWorkbook(filepath);
+                var ws = _wb.Worksheet(sheetNum);
+                _lastRow = ws.LastRowUsed().RowNumber();
+                _logger.Information("Fin de la lecture du fichier Excel.");
+            }
+            catch (FileNotFoundException)
+            {
+                _logger.Error($"Erreur : Le fichier '{filepath}' est introuvable.");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _logger.Error($"Erreur : Accès non autorisé au fichier '{filepath}'.");
+            }
+            catch (IOException)
+            {
+                if (fileLocked)
+                {
+                    _logger.Error($"Erreur : Le fichier est verrouillé après {retries} tentatives.");
+                }
+                else
+                {
+                    _logger.Error($"Erreur : Problème d'accès au fichier '{filepath}'.");
+                }
+            }
+            catch (Exception ex)
+            { 
+                _logger.Error($"Erreur inattendue : {ex.Message}");
+            }
         }
         public int GetLastRow()
         {
@@ -48,12 +78,27 @@ namespace MusicOrder
         }
         public ExcelOrder GetExcelOrder(int row)
         {
-            return new ExcelOrder(ReadCell(row, 1), ReadCell(row, 2), ReadCell(row, 3));
+            int.TryParse(ReadCell(row, 5), out int pisteValue);
+            return new ExcelOrder(ReadCell(row, 1), ReadCell(row, 2), ReadCell(row, 3), ReadCell(row, 4), pisteValue, ReadCell(row, 6));
         }
+        private bool IsFileLocked(string filePath)
+        {
+            try
+            {
+                using var stream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                stream.Close();
+            }
+            catch (IOException)
+            {
+                return true; // Le fichier est verrouillé par une autre application
+            }
+            return false;
+        }
+        #region Dispose
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this); // Empêche la finalisation automatique
+            GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
         {
@@ -61,10 +106,8 @@ namespace MusicOrder
             {
                 if (disposing)
                 {
-                    // Libérer les ressources managées
                     _wb?.Dispose();
                 }
-                // Libérer les ressources non managées
                 _disposed = true;
             }
         }
@@ -75,5 +118,6 @@ namespace MusicOrder
                 throw new ObjectDisposedException(nameof(ExcelManagement));
             }
         }
+        #endregion
     }
 }

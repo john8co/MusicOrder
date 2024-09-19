@@ -4,15 +4,21 @@ namespace MusicOrder.Models
 {
     public class ExcelOrder
     {
-        public ExcelOrder(string url, string title, string artist)
+        public ExcelOrder(string url, string title, string artist, string album, int piste, string genre)
         {
             Url = url;
             Title = title;
             Artist = artist;
+            Album = album;
+            Piste = piste;
+            Genre = genre;
         }
         public string Url { get; set; }
         public string Title { get; set; }
         public string Artist { get; set; }
+        public string? Album { get; set; }
+        public int? Piste { get; set; }
+        public string? Genre { get; set; }
         public string? Status { get; set; }
 
     }

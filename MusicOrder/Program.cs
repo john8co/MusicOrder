@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MusicOrder;
 using MusicOrder.Models;
+using Serilog;
 
 // Configurer et charger la configuration
 var configuration = new ConfigurationBuilder()
@@ -11,10 +12,17 @@ var configuration = new ConfigurationBuilder()
 
 // Configurer le conteneur de services
 var serviceProvider = new ServiceCollection()
-    .AddSingleton<IConfiguration>(configuration)  // Enregistrer IConfiguration
-    .AddTransient<ExcelOrders>()                  // Enregistrer ExcelOrders
+    .AddSingleton<IConfiguration>(configuration)
+    .AddTransient<ExcelOrders>()
     .BuildServiceProvider();
 
+Log.Logger = new LoggerConfiguration()
+           .MinimumLevel.Debug()
+           .WriteTo.Console()
+           .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+           .CreateLogger();
+
+Log.Information("Application démarre");
 var excelOrders = serviceProvider.GetService<ExcelOrders>();
 excelOrders.SetOrdersList();
 foreach(var o in excelOrders.Orders)

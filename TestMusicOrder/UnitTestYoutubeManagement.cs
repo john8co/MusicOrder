@@ -9,7 +9,7 @@ namespace TestMusicOrder
         public async void TestDownloadMusic()
         {
             string videoUrl = @"https://www.youtube.com/watch?v=NiSDXYBYIe8&ab_channel=CYRIL";
-            var offer = new ExcelOrder(videoUrl, "Stumblin' In", "CYRIL");
+            var offer = new ExcelOrder(videoUrl, "Stumblin' In", "CYRIL", "", 0, "");
             string folderPath = @"E:\Musique\MusicOrder";
             Assert.True(await YoutubeManagement.DownloadMusic(offer, folderPath));
         }
