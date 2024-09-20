@@ -2,7 +2,7 @@
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 
-namespace MusicOrder
+namespace MusicOrder.Management
 {
     public class YoutubeManagement : BaseClass
     {

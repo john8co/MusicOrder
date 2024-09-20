@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MusicOrder;
+using MusicOrder.Management;
 using MusicOrder.Models;
 using Serilog;
 

@@ -1,4 +1,6 @@
-﻿namespace MusicOrder.Models
+﻿using MusicOrder.Management;
+
+namespace MusicOrder.Models
 {
     public class ExistingFoldersInfo
     {

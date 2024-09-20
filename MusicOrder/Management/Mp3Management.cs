@@ -1,6 +1,6 @@
 ﻿using MusicOrder.Models;
 
-namespace MusicOrder
+namespace MusicOrder.Management
 {
     public class Mp3Management : BaseClass
     {
@@ -28,9 +28,9 @@ namespace MusicOrder
                 Artist = string.Join(", ", file.Tag.Performers).Trim(),
                 Album = file.Tag.Album,
                 Year = (int)file.Tag.Year,
-                Genre = string.Join(", ", file.Tag.Genres)                
+                Genre = string.Join(", ", file.Tag.Genres)
             };
-        }        
+        }
 
         public static void OrderMusicFiles(string folderPath)
         {
@@ -51,15 +51,15 @@ namespace MusicOrder
                     {
                         ManageMp3File(ref existingAnimes, mp3File.Album, animeFolders.Path, mp3File.FilePath, ref counter);
                     }
-                }            
-            }            
+                }
+            }
             catch (Exception ex)
             {
                 _logger.Error($"Une erreur s'est produite dans OrderMusicFiles : {ex.Message}");
             }
             _logger.Information($"{counter.NewFolderCounter} nouvels artistes ajoutés, {counter.MoveSongCounter} chansons triées et {counter.DeleteExistingCounter} doublons supprimés");
         }
-        private static void ManageMp3File(ref ExistingFoldersInfo existings, string criteria, string folderPath, string criteriaFileParh,ref Counter counter)
+        private static void ManageMp3File(ref ExistingFoldersInfo existings, string criteria, string folderPath, string criteriaFileParh, ref Counter counter)
         {
             criteria = FolderManagement.GetCleanCriteria(criteria);
             if (!existings.ExistingOnes.Contains(criteria))

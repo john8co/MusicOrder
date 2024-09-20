@@ -1,6 +1,6 @@
 ﻿using MusicOrder.Models;
 
-namespace MusicOrder
+namespace MusicOrder.Management
 {
     public class FolderManagement
     {

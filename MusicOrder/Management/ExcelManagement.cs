@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using MusicOrder.Models;
 
-namespace MusicOrder
+namespace MusicOrder.Management
 {
     public class ExcelManagement : BaseClass, IDisposable
     {
@@ -19,7 +19,7 @@ namespace MusicOrder
         }
         public void Save()
         {
-           _wb.Save();
+            _wb.Save();
         }
         public void SaveAs(string filename)
         {
@@ -68,7 +68,7 @@ namespace MusicOrder
                 }
             }
             catch (Exception ex)
-            { 
+            {
                 _logger.Error($"Erreur inattendue : {ex.Message}");
             }
         }
