@@ -4,6 +4,7 @@ namespace MusicOrder.Management
 {
     public class FolderManagement
     {
+        private const string Anime = "Anime";
         public static List<FolderInfo> GetexistingFolders(string folderPath)
         {
             var folderPaths = Directory.GetDirectories(folderPath)
@@ -18,10 +19,10 @@ namespace MusicOrder.Management
         }
         public static FolderInfo GetFolderAnime(string folderPath)
         {
-            if (Directory.Exists(Path.Combine(folderPath, "Anime")))
-                return new FolderInfo("Anime", Path.Combine(folderPath, "Anime"));
+            if (Directory.Exists(Path.Combine(folderPath, Anime)))
+                return new FolderInfo(Anime, Path.Combine(folderPath, Anime));
             else
-                return CreateFolder(folderPath, "Anime");
+                return CreateFolder(folderPath, Anime);
         }
         public static string GetCleanCriteria(string criteria)
         {
@@ -30,14 +31,10 @@ namespace MusicOrder.Management
         }
         private static string CleanCriteria(string criteria, List<string> toRemove)
         {
-            foreach (string item in toRemove)
-            {
-                if (criteria.EndsWith(item, StringComparison.OrdinalIgnoreCase))
-                {
-                    criteria = criteria.Substring(0, criteria.Length - item.Length).Trim();
-                }
-            }
-            return criteria;
+            return toRemove.Aggregate(criteria, (current, item) =>
+            current.EndsWith(item, StringComparison.OrdinalIgnoreCase)
+            ? current.Substring(0, current.Length - item.Length).Trim()
+            : current);
         }
     }
 }

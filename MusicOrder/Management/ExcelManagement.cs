@@ -81,7 +81,7 @@ namespace MusicOrder.Management
             int.TryParse(ReadCell(row, 5), out int pisteValue);
             return new ExcelOrder(ReadCell(row, 1), ReadCell(row, 2), ReadCell(row, 3), ReadCell(row, 4), pisteValue, ReadCell(row, 6));
         }
-        private bool IsFileLocked(string filePath)
+        private static bool IsFileLocked(string filePath)
         {
             try
             {
