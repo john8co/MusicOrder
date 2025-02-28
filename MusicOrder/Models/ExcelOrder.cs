@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MusicOrder.Management;
+using System.Collections;
 
 namespace MusicOrder.Models
 {
@@ -41,7 +42,7 @@ namespace MusicOrder.Models
             using (var xls = new ExcelManagement())
             {
                 xls.StartReader(GetMusicOrderListPath(), 1);
-                for (int i = 2; i < xls.GetLastRow(); i++)
+                for (int i = 2; i <= xls.GetLastRow(); i++)
                 {
                     Orders.Add(xls.GetExcelOrder(i));
                 }

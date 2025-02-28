@@ -24,10 +24,14 @@ Log.Logger = new LoggerConfiguration()
 
 Log.Information("Application démarre");
 var excelOrders = serviceProvider.GetService<ExcelOrders>();
-excelOrders.SetOrdersList();
-foreach(var o in excelOrders.Orders)
+if (excelOrders != null)
 {
-    await YoutubeManagement.DownloadMusic(o, configuration["AppSettings:MusicOrderFolder"]);
+    excelOrders.SetOrdersList();
+    var countOrders = excelOrders.Orders.Count();
+    for(int i = 0; i< countOrders; i++)
+    {
+        await YoutubeManagement.DownloadMusic(excelOrders.Orders[i], configuration["AppSettings:MusicOrderFolder"], i + 1,countOrders);
+    }
 }
 //string folderPath = @"E:\Musique\Tagués";
 //Mp3Management.OrderMusicFiles(folderPath);
