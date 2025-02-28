@@ -6,14 +6,14 @@ namespace MusicOrder.Management
 {
     public class YoutubeManagement : BaseClass
     {
-        public static async Task<bool> DownloadMusic(ExcelOrder order, string folderPath, int index = 0, int total = 0)
+        public static async Task<bool> DownloadMusic(ExcelOrder order, string folderPath, int index = 0, int total = 1)
         {
             var filePath = Path.Combine(folderPath, $"{order.Artist} - {SanitizeFileName(order.Title)}.mp3");
             _logger.Information($"Téléchargement {index}/{total} :");
             if (File.Exists(filePath))
             {
                 _logger.Warning($"Le fichier {filePath} existe déjà");
-                return false;
+                return true;
             }
             var youtube = new YoutubeClient();
             var video = await youtube.Videos.GetAsync(order.Url);

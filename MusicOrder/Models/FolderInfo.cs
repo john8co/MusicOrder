@@ -10,10 +10,5 @@
             Name = name;
             Path = path;
         }
-
-        public override string ToString()
-        {
-            return $"Name: {Name}, Path: {Path}";
-        }
     }
 }

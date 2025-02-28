@@ -24,11 +24,15 @@ namespace MusicOrder.Management
             return new Mp3FileInfo
             {
                 FilePath = folderPath,
-                Title = file.Tag.Title,
-                Artist = string.Join(", ", file.Tag.Performers).Trim(),
-                Album = file.Tag.Album,
-                Year = (int)file.Tag.Year,
-                Genre = string.Join(", ", file.Tag.Genres)
+                Data = new MusicMetadata
+                {
+                    Title = file.Tag.Title,
+                    Artist = string.Join(", ", file.Tag.Performers).Trim(),
+                    Album = file.Tag.Album,
+                    Year = (int)file.Tag.Year,
+                    Genre = string.Join(", ", file.Tag.Genres),
+                    TrackNumber = file.Tag.Track
+                }
             };
         }
 
@@ -43,13 +47,13 @@ namespace MusicOrder.Management
 
                 foreach (var mp3File in GetAllMp3(folderPath))
                 {
-                    if (mp3File.Genre != "Anime")
+                    if (mp3File.Data.Genre != "Anime")
                     {
-                        ManageMp3File(ref existingArtists, mp3File.Artist, folderPath, mp3File.FilePath, ref counter);
+                        ManageMp3File(ref existingArtists, mp3File.Data.Artist, folderPath, mp3File.FilePath, ref counter);
                     }
                     else
                     {
-                        ManageMp3File(ref existingAnimes, mp3File.Album, animeFolders.Path, mp3File.FilePath, ref counter);
+                        ManageMp3File(ref existingAnimes, mp3File.Data.Album, animeFolders.Path, mp3File.FilePath, ref counter);
                     }
                 }
             }

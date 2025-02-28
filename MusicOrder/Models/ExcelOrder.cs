@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MusicOrder.Management;
-using System.Collections;
 
 namespace MusicOrder.Models
 {
@@ -30,7 +29,7 @@ namespace MusicOrder.Models
         public ExcelOrders(IConfiguration configuration)
         {
             _configuration = configuration;
-            Orders = new List<ExcelOrder>();
+            Orders = [];
         }
         public List<ExcelOrder> Orders { get; set; }
         private string GetMusicOrderListPath()

@@ -13,5 +13,11 @@ namespace TestMusicOrder
             string folderPath = @"E:\Musique\MusicOrder";
             Assert.True(await YoutubeManagement.DownloadMusic(offer, folderPath));
         }
+        [Fact]
+        public async void TestGetTagAsync()
+        {
+            var test = await TagManagement.GetMetadataListAsync("Stumblin' In", "CYRIL");
+            Assert.True(test != null);
+        }
     }
 }
