@@ -5,7 +5,7 @@ namespace MusicOrder.Management
 {
     public class ExcelManagement : BaseClass, IDisposable
     {
-        private XLWorkbook _wb;
+        private XLWorkbook? _wb;
         private int _lastRow;
         private bool _disposed = false;
         public string ReadCell(int row, int col, int sheetNum = 1)
@@ -39,37 +39,38 @@ namespace MusicOrder.Management
                     {
                         break;
                     }
-                    _logger.Information($"Le fichier est verrouillé. Réessai {attempt + 1}/{retries} dans {delayMilliseconds / 1000} secondes...");
+                    _logger.Information("Le fichier est verrouillé. Réessai {Attempt}/{Retries} dans {DelaySeconds} secondes...", attempt + 1, retries, delayMilliseconds / 1000);
                     Thread.Sleep(delayMilliseconds);
                     attempt++;
                 }
                 _wb = new XLWorkbook(filepath);
                 var ws = _wb.Worksheet(sheetNum);
-                _lastRow = ws.LastRowUsed().RowNumber();
+                var lastRow = ws.LastRowUsed();
+                _lastRow = lastRow?.RowNumber() ?? 0;
                 _logger.Information("Fin de la lecture du fichier Excel.");
             }
             catch (FileNotFoundException)
             {
-                _logger.Error($"Erreur : Le fichier '{filepath}' est introuvable.");
+                _logger.Error("Erreur : Le fichier '{Filepath} 'est introuvable.", filepath);
             }
             catch (UnauthorizedAccessException)
             {
-                _logger.Error($"Erreur : Accès non autorisé au fichier '{filepath}'.");
+                _logger.Error("Erreur : Accès non autorisé au fichier '{Filepath}'.", filepath);
             }
             catch (IOException)
             {
                 if (fileLocked)
                 {
-                    _logger.Error($"Erreur : Le fichier est verrouillé après {retries} tentatives.");
+                    _logger.Error("Erreur : Le fichier est verrouillé après {Retries} tentatives.", retries);
                 }
                 else
                 {
-                    _logger.Error($"Erreur : Problème d'accès au fichier '{filepath}'.");
+                    _logger.Error("Erreur : Problème d'accès au fichier '{Filepath}'.", filepath);
                 }
             }
             catch (Exception ex)
             {
-                _logger.Error($"Erreur inattendue : {ex.Message}");
+                _logger.Error("Erreur inattendue : {Message}", ex.Message);
             }
         }
         public int GetLastRow()
