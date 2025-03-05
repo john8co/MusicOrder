@@ -8,14 +8,15 @@ namespace MusicOrder.Management
         private XLWorkbook? _wb;
         private int _lastRow;
         private bool _disposed = false;
-        public string ReadCell(int row, int col, int sheetNum = 1)
+        public string? ReadCell(int row, int col, int sheetNum = 1)
         {
-            return _wb.Worksheet(sheetNum).Cell(row, col).Value.ToString();
+            return _wb?.Worksheet(sheetNum).Cell(row, col).Value.ToString();
         }
         public void WriteCell(int row, int col, string value, int sheetNum = 1)
         {
-            var cell = _wb.Worksheet(sheetNum).Cell(row, col);
-            cell.Value = value;
+            var cell = _wb?.Worksheet(sheetNum).Cell(row, col);
+            if(cell !=null)
+                cell.Value = value;
         }
         public void Save()
         {
@@ -106,13 +107,6 @@ namespace MusicOrder.Management
                     _wb?.Dispose();
                 }
                 _disposed = true;
-            }
-        }
-        private void CheckDisposed()
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(nameof(ExcelManagement));
             }
         }
         #endregion

@@ -2,7 +2,7 @@
 
 namespace MusicOrder.Management
 {
-    public class FolderManagement
+    public static class FolderManagement
     {
         private const string Anime = "Anime";
         public static List<FolderInfo> GetexistingFolders(string folderPath)
@@ -26,7 +26,7 @@ namespace MusicOrder.Management
         }
         public static string GetCleanCriteria(string criteria)
         {
-            List<string> toRemove = new List<string>() { "Opening", "Ending" };
+            var toRemove = new List<string>() { "Opening", "Ending" };
             return CleanCriteria(criteria, toRemove);
         }
         private static string CleanCriteria(string criteria, List<string> toRemove)
