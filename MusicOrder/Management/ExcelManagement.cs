@@ -19,16 +19,15 @@ namespace MusicOrder.Management
         }
         public void Save()
         {
-            _wb.Save();
+            _wb?.Save();
         }
         public void SaveAs(string filename)
         {
-            _wb.SaveAs(filename, false);
+            _wb?.SaveAs(filename, false);
         }
         public void StartReader(string filepath, int sheetNum = 1, int retries = 5, int delayMilliseconds = 1000)
         {
             int attempt = 0;
-            bool fileLocked = false;
 
             try
             {
@@ -59,14 +58,7 @@ namespace MusicOrder.Management
             }
             catch (IOException)
             {
-                if (fileLocked)
-                {
-                    _logger.Error("Erreur : Le fichier est verrouillé après {Retries} tentatives.", retries);
-                }
-                else
-                {
-                    _logger.Error("Erreur : Problème d'accès au fichier '{Filepath}'.", filepath);
-                }
+                _logger.Error("Erreur : Problème d'accès au fichier '{Filepath}'.", filepath);
             }
             catch (Exception ex)
             {
@@ -79,7 +71,11 @@ namespace MusicOrder.Management
         }
         public ExcelOrder GetExcelOrder(int row)
         {
-            int.TryParse(ReadCell(row, 5), out int pisteValue);
+            if (!int.TryParse(ReadCell(row, 5), out int pisteValue))
+            {
+                _logger.Warning("Failed to parse piste value at row {Row}. Defaulting to 0.", row);
+                pisteValue = 0;
+            }
             return new ExcelOrder(ReadCell(row, 1), ReadCell(row, 2), ReadCell(row, 3), ReadCell(row, 4), pisteValue, ReadCell(row, 6));
         }
         private static bool IsFileLocked(string filePath)
