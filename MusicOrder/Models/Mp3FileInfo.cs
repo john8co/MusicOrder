@@ -2,8 +2,8 @@
 {
     public class Mp3FileInfo
     {
-        public string FilePath { get; set; }
-        public MusicMetadata Data { get; set; }
+        public required string FilePath { get; set; }
+        public required MusicMetadata Data { get; set; }
     }
     public class MusicMetadata
     {

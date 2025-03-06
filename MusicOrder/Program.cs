@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MusicOrder.Management;
 using MusicOrder.Models;
 using Serilog;
+using Serilog.Core;
 
 // Configurer et charger la configuration
 var configuration = new ConfigurationBuilder()
@@ -27,10 +28,19 @@ var excelOrders = serviceProvider.GetService<ExcelOrders>();
 if (excelOrders != null)
 {
     excelOrders.SetOrdersList();
-    var countOrders = excelOrders.Orders.Count();
-    for(int i = 0; i< countOrders; i++)
+    var countOrders = excelOrders.Orders.Count;
+    string? folder = configuration["AppSettings:MusicOrderFolder"];
+    if (!string.IsNullOrWhiteSpace(folder))
     {
-        await YoutubeManagement.DownloadMusic(excelOrders.Orders[i], configuration["AppSettings:MusicOrderFolder"], i + 1,countOrders);
+        for (int i = 0; i < countOrders; i++)
+        {
+            await YoutubeManagement.DownloadMusic(excelOrders.Orders[i], folder, i + 1, countOrders);
+        }
+    }
+    else
+    {
+        string message = "AppSettings:MusicOrderFolder is null";
+        throw new Exception(message);
     }
 }
 //string folderPath = @"E:\Musique\Tagués";

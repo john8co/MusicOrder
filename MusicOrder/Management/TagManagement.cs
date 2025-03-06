@@ -5,7 +5,7 @@ namespace MusicOrder.Management
 {
     public class TagManagement : BaseClass
     {
-        private static readonly HttpClient _httpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new();
 
         static TagManagement()
         {
@@ -41,7 +41,7 @@ namespace MusicOrder.Management
                         {
                             Title = title,
                             Artist = artist,
-                            Album = release.GetProperty("title").GetString(),
+                            Album = release.GetProperty("title").GetString() ?? "Unknown",
                             Year = ExtractYear(release),
                             Genre = ExtractGenre(releaseGroup),
                             AlbumArtUrl = $"https://coverartarchive.org/release/{release.GetProperty("id").GetString()}/front"
@@ -63,8 +63,8 @@ namespace MusicOrder.Management
         {
             if (release.TryGetProperty("date", out var dateProp))
             {
-                string dateStr = dateProp.GetString();
-                if (!string.IsNullOrEmpty(dateStr) && dateStr.Length >= 4 && int.TryParse(dateStr.Substring(0, 4), out int year))
+                string dateStr = dateProp.GetString() ?? "0";
+                if (!string.IsNullOrEmpty(dateStr) && dateStr.Length >= 4 && int.TryParse(dateStr.AsSpan(0, 4), out int year))
                     return year;
             }
             return 0;
@@ -74,7 +74,7 @@ namespace MusicOrder.Management
         {
             if (releaseGroup.TryGetProperty("tags", out var tags) && tags.GetArrayLength() > 0)
             {
-                return tags[0].GetProperty("name").GetString();
+                return tags[0].GetProperty("name").GetString() ?? "Unknown";
             }
             return "Unknown";
         }

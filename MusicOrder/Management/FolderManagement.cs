@@ -33,7 +33,7 @@ namespace MusicOrder.Management
         {
             return toRemove.Aggregate(criteria, (current, item) =>
             current.EndsWith(item, StringComparison.OrdinalIgnoreCase)
-            ? current.Substring(0, current.Length - item.Length).Trim()
+            ? current[..^item.Length].Trim()
             : current);
         }
     }
