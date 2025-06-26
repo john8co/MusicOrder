@@ -40,7 +40,7 @@ if (excelOrders != null)
     else
     {
         string message = "AppSettings:MusicOrderFolder is null";
-        throw new Exception(message);
+        throw new ArgumentNullException(message);
     }
 }
 //string folderPath = @"E:\Musique\Tagués";

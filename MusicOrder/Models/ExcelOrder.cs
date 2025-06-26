@@ -28,7 +28,7 @@ namespace MusicOrder.Models
             {
                 string message = "AppSettings:MusicOrderFolder is null";
                 _logger.Error(message);
-                throw new Exception(message);
+                throw new ArgumentNullException(message);
             }
         }
         public void SetOrdersList()

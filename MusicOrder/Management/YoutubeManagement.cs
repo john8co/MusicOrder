@@ -9,10 +9,10 @@ namespace MusicOrder.Management
         public static async Task<bool> DownloadMusic(ExcelOrder order, string folderPath, int index = 0, int total = 1)
         {
             var filePath = Path.Combine(folderPath, $"{order.Artist} - {SanitizeFileName(order.Title)}.mp3");
-            _logger.Information($"Téléchargement {index}/{total} :");
+            _logger.Information("Téléchargement {Index}/{Total} :", index, total);
             if (File.Exists(filePath))
             {
-                _logger.Warning($"Le fichier {filePath} existe déjà");
+                _logger.Warning("Le fichier {FilePath} existe déjà", filePath);
                 return true;
             }
             var youtube = new YoutubeClient();
@@ -27,7 +27,7 @@ namespace MusicOrder.Management
                 return false;
             }
             await youtube.Videos.Streams.DownloadAsync(audioStreamInfo, filePath);
-            _logger.Information($"Téléchargement de {filePath} terminé");
+            _logger.Information("Téléchargement de {FilePath} terminé", filePath);
             return true;
         }
         private static string SanitizeFileName(string text)
