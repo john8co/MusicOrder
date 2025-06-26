@@ -5,6 +5,8 @@ namespace TestMusicOrder
 {
     public class UnitTestYoutubeManagement
     {
+        private readonly TagManagement _tagManagement = new();
+
         [Fact]
         public async void TestDownloadMusic()
         {
@@ -16,7 +18,7 @@ namespace TestMusicOrder
         [Fact]
         public async void TestGetTagAsync()
         {
-            var test = await TagManagement.GetMetadataListAsync("Stumblin' In", "CYRIL");
+            var test = await _tagManagement.GetMetadataAsync("CYRIL", "Stumblin' In");
             Assert.True(test != null);
         }
     }
